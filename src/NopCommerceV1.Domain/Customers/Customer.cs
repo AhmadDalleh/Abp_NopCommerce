@@ -35,12 +35,19 @@ namespace NopCommerceV1.Customers
         public string? PhoneNumber { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }             // maps to Deleted
+        public Guid? BillingAddressId { get; set; }
+        public Guid? ShippingAddressId { get; set; }
+
 
         #endregion
 
         #region Navigation Properties
+        public virtual Address? BillingAddress { get; set; }
+        public virtual Address? ShippingAddress { get; set; }
         public virtual ICollection<CustomerRole> CustomerRoles { get; set; } = new List<CustomerRole>();
         public virtual ICollection<CustomerPassword> CustomerPasswords { get; set; } = new List<CustomerPassword>();
+        public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
+
 
         #endregion
 

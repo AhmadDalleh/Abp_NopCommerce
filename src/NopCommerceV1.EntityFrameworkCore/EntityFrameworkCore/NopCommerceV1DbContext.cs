@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NopCommerceV1.Customers;
+using NopCommerceV1.GenericAttributes;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -25,7 +26,7 @@ public class NopCommerceV1DbContext :
     ITenantManagementDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
-    public DbSet<CustomerRole> CustomerRoles { get; set; }
+   
 
 
     #region Entities from the modules
@@ -53,6 +54,13 @@ public class NopCommerceV1DbContext :
     // Tenant Management
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
+
+    public DbSet<CustomerRole> CustomerRoles { get; set; }
+
+    public DbSet<GenericAttribute> GenericAttributes { get; set; }
+
+    public DbSet<Address> Addresses { get; set; }
+
 
     #endregion
 
@@ -151,7 +159,65 @@ public class NopCommerceV1DbContext :
             .WithOne(x => x.Customer)
             .HasForeignKey(x => x.CustomerId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            // M:N with Address table (CustomerAddresses)
+            b.HasMany(x => x.Addresses)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("CustomerAddresses"));
+
+            //One-to-One: Billing and Shipping Address
+            b.HasOne(x => x.BillingAddress)
+            .WithMany()
+            .HasForeignKey(x => x.BillingAddressId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.ShippingAddress)
+           .WithMany()
+           .HasForeignKey(x => x.ShippingAddressId)
+           .OnDelete(DeleteBehavior.Restrict);
         });
+
+        //Generic Attribute Configuration
+        builder.Entity<GenericAttribute>(b =>
+        {
+            b.ToTable("GenericAttribute");
+
+            b.Property(x => x.EntityId)
+            .IsRequired();
+
+            b.Property(x => x.KeyGroup)
+            .IsRequired()
+            .HasMaxLength(400);
+
+            b.Property(x => x.key)
+            .IsRequired()
+            .HasMaxLength(400);
+
+            b.Property(x => x.Value)
+            .HasMaxLength(4000);
+
+            b.HasIndex(x => new { x.EntityId, x.KeyGroup, x.key });
+        });
+
+        //Address Configuration
+        builder.Entity<Address>(b =>
+        {
+            b.ToTable("Address");
+
+            b.Property(x => x.FirstName).HasMaxLength(100).IsRequired();
+            b.Property(x => x.LastName).HasMaxLength(100).IsRequired();
+            b.Property(x => x.Email).HasMaxLength(100).IsRequired();
+            b.Property(x => x.Company).HasMaxLength(100);
+            b.Property(x => x.CountryId).HasMaxLength(50);
+            b.Property(x => x.City).HasMaxLength(100);
+            b.Property(x => x.Address1).HasMaxLength(100);
+            b.Property(x => x.Address2).HasMaxLength(100);
+            b.Property(x => x.ZipPostalCode).HasMaxLength(100);
+            b.Property(x => x.PhoneNumber).HasMaxLength(100);
+            b.Property(x => x.FaxNumber).HasMaxLength(100);
+
+        });
+
         #endregion
     }
 }
