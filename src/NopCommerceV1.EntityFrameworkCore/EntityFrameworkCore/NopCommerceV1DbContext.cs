@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NopCommerceV1.Customers;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -24,6 +25,8 @@ public class NopCommerceV1DbContext :
     ITenantManagementDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
+    public DbSet<CustomerRole> CustomerRoles { get; set; }
+
 
     #region Entities from the modules
 
@@ -74,13 +77,81 @@ public class NopCommerceV1DbContext :
         builder.ConfigureFeatureManagement();
         builder.ConfigureTenantManagement();
 
+
+        #region Table Configuratins  
         /* Configure your own tables/entities inside here */
 
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(NopCommerceV1Consts.DbTablePrefix + "YourEntities", NopCommerceV1Consts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
+        //Customer Role Configuration
+        builder.Entity<CustomerRole>(b =>
+        {
+            b.ToTable("CustomerRoles");
+            b.Property(x => x.Name)
+            .IsRequired()
+            .HasMaxLength(64);
+
+            b.Property(x => x.SystemName)
+            .HasMaxLength(64);
+
+            b.HasIndex(x => x.Name).IsUnique();
+            b.HasIndex(x => x.SystemName).IsUnique();
+        });
+
+
+        //Customer Password Configuration
+        builder.Entity<CustomerPassword>(b =>
+        {
+            b.ToTable("CustomerPasswords");
+
+            b.Property(x => x.Password)
+            .IsRequired()
+            .HasMaxLength(512);
+
+            b.Property(x => x.PasswordFormatId)
+            .IsRequired();
+
+            b.Property(x => x.CreatedOnUtc)
+            .IsRequired();
+
+            b.HasOne(x => x.Customer)
+            .WithMany(x => x.CustomerPasswords)
+            .HasForeignKey(x => x.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        //Customer Configuration
+        builder.Entity<Customer>(b =>
+        {
+            b.ToTable("Customers");
+
+            b.Property(x => x.Username)
+            .HasMaxLength(100)
+            .IsRequired();
+
+            b.Property(x => x.Email)
+            .HasMaxLength(100)
+            .IsRequired();
+
+            b.Property(x => x.PhoneNumber)
+            .HasMaxLength(50);
+
+            b.Property(x => x.Active)
+            .IsRequired();
+
+            b.Property(x => x.Deleted)
+            .IsRequired();
+
+            b.HasIndex(x => x.Email).IsUnique();
+            b.HasIndex(x => x.Username).IsUnique();
+
+            b.HasMany(x => x.CustomerRoles)
+                .WithMany(x => x.Customers)
+                .UsingEntity(j => j.ToTable("Customer_CustomerRole_Mapping"));
+
+            b.HasMany(x => x.CustomerPasswords)
+            .WithOne(x => x.Customer)
+            .HasForeignKey(x => x.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
+        });
+        #endregion
     }
 }
