@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NopCommerceV1.Customers
+namespace NopCommerceV1.Customers.Enums
 {
     public enum PasswordFormat
     {

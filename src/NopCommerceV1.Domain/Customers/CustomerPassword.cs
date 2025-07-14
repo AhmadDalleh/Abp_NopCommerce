@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Entities.Auditing;
-using NopCommerceV1.Customers;
+using NopCommerceV1.Customers.Enums;
 
 
 namespace NopCommerceV1.Customers

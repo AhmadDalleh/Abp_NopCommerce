@@ -61,6 +61,10 @@ public class NopCommerceV1DbContext :
 
     public DbSet<Address> Addresses { get; set; }
 
+    public DbSet<RewardPointsHistory> RewardPointsHistories { get; set; }
+
+    public DbSet<NewsLetterSubscription> NewsLetterSubscriptions { get; set; }
+
 
     #endregion
 
@@ -95,10 +99,19 @@ public class NopCommerceV1DbContext :
             b.ToTable("CustomerRoles");
             b.Property(x => x.Name)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(255);
+
+            b.Property(x => x.FreeShipping)
+            .IsRequired();
+
+            b.Property(x=>x.TaxExempt)
+            .IsRequired();
 
             b.Property(x => x.SystemName)
-            .HasMaxLength(64);
+            .HasMaxLength(255);
+
+            b.Property(x=>x.Active)
+            .IsRequired();
 
             b.HasIndex(x => x.Name).IsUnique();
             b.HasIndex(x => x.SystemName).IsUnique();
@@ -218,6 +231,47 @@ public class NopCommerceV1DbContext :
 
         });
 
+        //RewardPointsHistory Configuration
+        builder.Entity<RewardPointsHistory>(b =>
+        {
+            b.ToTable("RewardPointsHistory");
+
+            b.Property(x => x.CustomerId).IsRequired();
+            b.Property(x => x.Points).IsRequired();
+            b.Property(x => x.Message).HasMaxLength(1000).IsRequired();
+            b.Property(x => x.CreatedOnUtc).IsRequired();
+            b.Property(x => x.EndDateOnUtc);
+            b.Property(x => x.UseWithOrderId);
+            b.Property(x => x.StoreId);
+
+            b.HasOne(x => x.Customer)
+            .WithMany()
+            .HasForeignKey(x => x.CustomerId)   
+            .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasIndex(x => x.CustomerId);
+        });
+
+        //NewsLetterSubscription Configuration
+        builder.Entity<NewsLetterSubscription>(b =>
+        {
+            b.ToTable("NewsLetterSubscription");
+
+            b.Property(x => x.Email)
+            .IsRequired().HasMaxLength(255);
+
+            b.Property(x => x.Active).IsRequired();
+            b.Property(x => x.CreatedOnUtc).IsRequired();
+
+            b.Property(x => x.StoreId);
+
+            b.HasIndex(x => new { x.Email, x.StoreId }).IsUnique();
+
+            b.HasOne(x => x.Customer)
+            .WithMany()
+            .HasForeignKey(x => x.CustomerId)
+            .OnDelete(DeleteBehavior.SetNull);
+        });
         #endregion
     }
 }

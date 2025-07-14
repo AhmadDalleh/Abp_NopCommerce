@@ -11,21 +11,26 @@ namespace NopCommerceV1.Customers
         #region Ctor
         protected CustomerRole() { }
 
-        public CustomerRole(Guid id, string name, bool isActive, bool isSystemRole, string? systemName)
+        public CustomerRole(Guid id, string name, bool active, bool isSystemRole, string? systemName, bool taxExempt, bool freeShipping = false)
             : base(id)
         {
             Name = name;
-            IsActive = isActive;
+            Active = active;
             IsSystemRole = isSystemRole;
             SystemName = systemName;
+            TaxExempt = taxExempt;
+            FreeShipping = freeShipping;
         }
         #endregion
 
         #region Table Columns
         public string Name { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsSystemRole { get; set; }
         public string? SystemName { get; set; }
+        public bool FreeShipping {  get; set; }
+
+        public bool TaxExempt { get; set; }
+        public bool Active { get; set; }
+        public bool IsSystemRole { get; set; }
 
         #endregion
 
