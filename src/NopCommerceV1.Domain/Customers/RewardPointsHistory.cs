@@ -33,7 +33,6 @@ namespace NopCommerceV1.Customers
         public DateTime CreatedOnUtc { get; set; }
         public DateTime? EndDateOnUtc { get; set; }
         public Guid UseWithOrderId { get; set; }
-        public int? StoreId { get; set; }
 
         #endregion
 

@@ -242,7 +242,6 @@ public class NopCommerceV1DbContext :
             b.Property(x => x.CreatedOnUtc).IsRequired();
             b.Property(x => x.EndDateOnUtc);
             b.Property(x => x.UseWithOrderId);
-            b.Property(x => x.StoreId);
 
             b.HasOne(x => x.Customer)
             .WithMany()
@@ -263,9 +262,6 @@ public class NopCommerceV1DbContext :
             b.Property(x => x.Active).IsRequired();
             b.Property(x => x.CreatedOnUtc).IsRequired();
 
-            b.Property(x => x.StoreId);
-
-            b.HasIndex(x => new { x.Email, x.StoreId }).IsUnique();
 
             b.HasOne(x => x.Customer)
             .WithMany()

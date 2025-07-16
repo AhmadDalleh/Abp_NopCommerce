@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NopCommerceV1.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace NopCommerceV1.Migrations
 {
     [DbContext(typeof(NopCommerceV1DbContext))]
-    partial class NopCommerceV1DbContextModelSnapshot : ModelSnapshot
+    [Migration("20250716073023_SaveAllChanges")]
+    partial class SaveAllChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -402,9 +405,16 @@ namespace NopCommerceV1.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
 
+                    b.Property<Guid?>("StoreId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("Email", "StoreId")
+                        .IsUnique()
+                        .HasFilter("[StoreId] IS NOT NULL");
 
                     b.ToTable("NewsLetterSubscription", (string)null);
                 });
@@ -459,6 +469,9 @@ namespace NopCommerceV1.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<int>("Points")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StoreId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("UseWithOrderId")

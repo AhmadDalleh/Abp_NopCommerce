@@ -26,9 +26,6 @@ namespace NopCommerceV1.Customers
         #region Table Columns
         public string Email { get; set; }
         public Guid? CustomerId { get; set; }
-
-        public Guid? StoreId { get; set; }
-
         public bool Active { get; set; }
 
         public DateTime CreatedOnUtc { get; set; }
