@@ -40,6 +40,7 @@ using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.UI;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
+using Microsoft.AspNetCore.Http;
 
 namespace NopCommerceV1.Web;
 
@@ -201,10 +202,37 @@ public class NopCommerceV1WebModule : AbpModule
         var app = context.GetApplicationBuilder();
         var env = context.GetEnvironment();
 
+        //if (env.IsDevelopment())
+        //{
+        //    app.UseDeveloperExceptionPage();
+        //}
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+
+            // Custom middleware to return detailed JSON errors
+            app.Use(async (httpContext, next) =>
+            {
+                try
+                {
+                    await next();
+                }
+                catch (Exception ex)
+                {
+                    httpContext.Response.StatusCode = 500;
+                    httpContext.Response.ContentType = "application/json";
+
+                    var errorResponse = new
+                    {
+                        message = ex.Message,
+                        stackTrace = ex.StackTrace
+                    };
+
+                    await httpContext.Response.WriteAsJsonAsync(errorResponse);
+                }
+            });
         }
+
 
         app.UseAbpRequestLocalization();
 
@@ -227,7 +255,7 @@ public class NopCommerceV1WebModule : AbpModule
         app.UseUnitOfWork();
         app.UseDynamicClaims();
         app.UseAuthorization();
-
+        
         app.UseSwagger();
         app.UseAbpSwaggerUI(options =>
         {

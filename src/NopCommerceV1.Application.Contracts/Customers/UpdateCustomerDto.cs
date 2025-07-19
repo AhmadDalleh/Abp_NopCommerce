@@ -9,6 +9,8 @@ namespace NopCommerceV1.Customers
 {
     public class UpdateCustomerDto
     {
+        #region Propeties 
+
         [Required]
         [EmailAddress]
         [StringLength(255)]
@@ -23,10 +25,15 @@ namespace NopCommerceV1.Customers
         [StringLength(50)]
         public string? LastName { get; set; }
 
-        public bool Active { get; set; }
+        public bool Active { get; set; } = true;
 
         public Guid? BillingAddressId { get; set; }
 
         public Guid? ShippingAddressId { get; set; }
+
+        public DateTime CreatedOnUtc { get; set; } = DateTime.UtcNow;
+
+        #endregion
+
     }
 }

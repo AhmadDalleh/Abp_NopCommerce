@@ -55,12 +55,15 @@ public class NopCommerceV1DbContext :
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<CustomerPassword> CustomerPasswords { get; set; }
     public DbSet<CustomerRole> CustomerRoles { get; set; }
 
     public DbSet<GenericAttribute> GenericAttributes { get; set; }
 
     public DbSet<Address> Addresses { get; set; }
 
+    
     public DbSet<RewardPointsHistory> RewardPointsHistories { get; set; }
 
     public DbSet<NewsLetterSubscription> NewsLetterSubscriptions { get; set; }
@@ -151,6 +154,13 @@ public class NopCommerceV1DbContext :
             b.Property(x => x.Email)
             .HasMaxLength(100)
             .IsRequired();
+
+            b.Property(x => x.FirstName)
+            .HasMaxLength(100);
+
+
+            b.Property(x => x.FirstName)
+            .HasMaxLength(100);
 
             b.Property(x => x.PhoneNumber)
             .HasMaxLength(50);

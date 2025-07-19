@@ -14,6 +14,7 @@ namespace NopCommerceV1.Customers
         [StringLength(255)]
         public string Email { get; set; } = string.Empty;
 
+        [Required]
         [StringLength(100)]
         public string? Username { get; set; }
 
@@ -25,9 +26,9 @@ namespace NopCommerceV1.Customers
 
         public bool Active { get; set; } = true;
 
-        //public Guid? BillingAddressId { get; set; }
+        public Guid? BillingAddressId { get; set; }
 
-        //public Guid? ShippingAddressId { get; set; }
+        public Guid? ShippingAddressId { get; set; }
 
         public DateTime CreatedOnUtc { get; set; } = DateTime.UtcNow;
 

@@ -63,6 +63,7 @@ public class NopCommerceV1DomainModule : AbpModule
 
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
+        
 #endif
     }
 }

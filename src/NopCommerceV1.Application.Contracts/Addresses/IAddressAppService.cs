@@ -10,9 +10,11 @@ using Volo.Abp.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 
+
+
 namespace NopCommerceV1.Addresses
 {
-    [RemoteService]
+ 
     public interface IAddressAppService : IApplicationService 
     {
         Task<AddressDto> GetAsync(Guid id);
