@@ -38,6 +38,8 @@ public class DbMigratorHostedService : IHostedService
                 .GetRequiredService<NopCommerceV1DbMigrationService>()
                 .MigrateAsync();
 
+
+         
             await application.ShutdownAsync();
 
             _hostApplicationLifetime.StopApplication();
