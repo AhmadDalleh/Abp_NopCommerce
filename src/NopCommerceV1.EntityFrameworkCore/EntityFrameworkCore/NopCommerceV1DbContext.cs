@@ -159,7 +159,7 @@ public class NopCommerceV1DbContext :
             .HasMaxLength(100);
 
 
-            b.Property(x => x.FirstName)
+            b.Property(x => x.LastName)
             .HasMaxLength(100);
 
             b.Property(x => x.PhoneNumber)
@@ -170,6 +170,9 @@ public class NopCommerceV1DbContext :
 
             b.Property(x => x.Deleted)
             .IsRequired();
+            b.Property(x => x.CreatedOnUtc)
+            .IsRequired();
+
 
             b.HasIndex(x => x.Email).IsUnique();
             b.HasIndex(x => x.Username).IsUnique();

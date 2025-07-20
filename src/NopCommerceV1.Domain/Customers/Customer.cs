@@ -38,9 +38,10 @@ namespace NopCommerceV1.Customers
         public string? PhoneNumber { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }             // maps to Deleted
+        public DateTime CreatedOnUtc { get; set; }
         public Guid? BillingAddressId { get; set; }
         public Guid? ShippingAddressId { get; set; }
-
+        public int? PasswordFormatId { get; set; }
 
         #endregion
 
