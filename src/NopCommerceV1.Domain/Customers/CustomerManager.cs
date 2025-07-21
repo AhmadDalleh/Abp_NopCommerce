@@ -18,39 +18,39 @@ namespace NopCommerceV1.Customers
     {
         #region Properties 
 
-        private readonly IRepository<Customer, Guid> _customerRepository;
-        private readonly IRepository<CustomerPassword, Guid> _passwordRepository;
-        private readonly IRepository<CustomerRole,Guid> _roleRepository;
+        private readonly IRepository<Customer,Guid> _customerRepository;
 
         #endregion
 
         #region Ctor
-        public CustomerManager(IRepository<Customer, Guid> customerRepository, IRepository<CustomerPassword, Guid> passwordRepository, IRepository<CustomerRole, Guid> roleRepository)
+        public CustomerManager(IRepository<Customer, Guid> customerRepository)
         {
             _customerRepository = customerRepository;
-            _passwordRepository = passwordRepository;
-            _roleRepository = roleRepository;
+
         }
         #endregion
 
         #region Methods 
-        public async Task<Customer> CreateAsync(string username, string email, string firstName, string lastName)
+        public async Task<Customer> CreateAsync(string username, string email, string firstName, string lastName , string phoneNumber)
         {
-            if(await _customerRepository.AnyAsync(x=>x.Email == email || x.Username == username))
+            var existingCustomer = await _customerRepository.FirstOrDefaultAsync(c => c.Email == email || c.Username == username || c.PhoneNumber == phoneNumber);
+            if (existingCustomer is not null)
             {
-                throw new BusinessException("Customer with this email or user name is already exists");
+                throw new BusinessException(
+        NopCommerceV1DomainErrorCodes.CustomerEmailAlreadyExists,
+       "A customer with this email already exists.");
             }
-            var customer = new Customer(GuidGenerator.Create(), username, email, null, active: true, deleted: false)
+
+
+            var customer = new Customer(Guid.NewGuid(), username, email, phoneNumber, true, false)
             {
                 FirstName = firstName,
                 LastName = lastName,
                 CreatedOnUtc = DateTime.UtcNow
             };
-            return await _customerRepository.InsertAsync(customer, autoSave: true);
+            return customer;
         }
-
-
-
+       
     #endregion
-}
+    }
 }

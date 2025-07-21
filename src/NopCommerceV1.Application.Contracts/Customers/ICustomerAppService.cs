@@ -9,13 +9,8 @@ using Volo.Abp.Application.Services;
 
 namespace NopCommerceV1.Customers
 {
-    public interface ICustomerAppService : ICrudAppService<//Defines CRUD methods 
-        CustomerDto,
-        Guid,
-        PagedAndSortedResultRequestDto, //Used for paging/sorting
-        CreateCustomerDto,
-        UpdateCustomerDto>
+    public interface ICustomerAppService : IApplicationService
     {
-
+        Task<CustomerDto> CreateCustomerAsync(CreateCustomerDto input); 
     }
 }

@@ -11,7 +11,7 @@ namespace NopCommerceV1.Customers
         #region Propertis for gets customer info
         public Guid Id { get; set; }
 
-        public string Email { get; set; } = string.Empty;
+        public string Email { get; set; } 
 
         public string? Username { get; set; }
 
@@ -19,13 +19,13 @@ namespace NopCommerceV1.Customers
 
         public string? LastName { get; set; }
 
-        public bool Active { get; set; }
+        public bool? Active { get; set; }
 
-        public Guid? BillingAddressId { get; set; }
+        //public Guid? BillingAddressId { get; set; }
 
-        public Guid? ShippingAddressId { get; set; }
+        //public Guid? ShippingAddressId { get; set; }
 
-        public DateTime CreatedOnUtc { get; set; }
+        public DateTime? CreatedOnUtc { get; set; }
 
         #endregion
     }

@@ -41,6 +41,7 @@ using Volo.Abp.UI;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
 using Microsoft.AspNetCore.Http;
+using Volo.Abp.AspNetCore.ExceptionHandling;
 
 namespace NopCommerceV1.Web;
 
@@ -85,6 +86,10 @@ public class NopCommerceV1WebModule : AbpModule
                 options.UseAspNetCore();
             });
         });
+        Configure<AbpExceptionHandlingOptions>(options =>
+        {
+            options.SendExceptionsDetailsToClients = true;
+        });
 
         if (!hostingEnvironment.IsDevelopment())
         {
@@ -104,6 +109,7 @@ public class NopCommerceV1WebModule : AbpModule
     {
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         var configuration = context.Services.GetConfiguration();
+
 
         ConfigureAuthentication(context);
         ConfigureUrls(configuration);
@@ -202,38 +208,11 @@ public class NopCommerceV1WebModule : AbpModule
         var app = context.GetApplicationBuilder();
         var env = context.GetEnvironment();
 
-        //if (env.IsDevelopment())
-        //{
-        //    app.UseDeveloperExceptionPage();
-        //}
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-
-            // Custom middleware to return detailed JSON errors
-            app.Use(async (httpContext, next) =>
-            {
-                try
-                {
-                    await next();
-                }
-                catch (Exception ex)
-                {
-                    httpContext.Response.StatusCode = 500;
-                    httpContext.Response.ContentType = "application/json";
-
-                    var errorResponse = new
-                    {
-                        message = ex.Message,
-                        stackTrace = ex.StackTrace
-                    };
-
-                    await httpContext.Response.WriteAsJsonAsync(errorResponse);
-                }
-            });
         }
-
-
+     
         app.UseAbpRequestLocalization();
 
         if (!env.IsDevelopment())
