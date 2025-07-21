@@ -37,8 +37,8 @@ namespace NopCommerceV1.Customers
             if (existingCustomer is not null)
             {
                 throw new BusinessException(
-        NopCommerceV1DomainErrorCodes.CustomerEmailAlreadyExists,
-       "A customer with this email already exists.");
+            NopCommerceV1DomainErrorCodes.CustomerEmailAlreadyExists,
+                "A customer with this email already exists.");
             }
 
 
@@ -48,6 +48,38 @@ namespace NopCommerceV1.Customers
                 LastName = lastName,
                 CreatedOnUtc = DateTime.UtcNow
             };
+            return customer;
+        }
+
+        public async Task<Customer> UpdateAsync(Guid id,string username,string email, string firstName, string lastName, string phoneNumber)
+        {
+            var customer = await _customerRepository.FindAsync(c=>c.Id==id);
+            if (customer is null)
+            {
+                throw new BusinessException(
+                    NopCommerceV1DomainErrorCodes.CustomerIsNotExist, "there is no account with this id."
+                    );
+            }
+            var existEmail = await _customerRepository.FirstOrDefaultAsync(c =>
+                (c.Email == email && email != customer.Email) ||
+                (c.Username == username && username != customer.Username) ||
+                (c.PhoneNumber == phoneNumber && phoneNumber == customer.PhoneNumber)
+                );
+
+            if (existEmail is not null) 
+            {
+               
+               throw new BusinessException(
+               NopCommerceV1DomainErrorCodes.CustomerEmailAlreadyExists,
+               "the customer is already exists.");
+                
+            }
+            customer.Username = username;
+            customer.Email = email;
+            customer.FirstName = firstName; 
+            customer.LastName = lastName;
+            customer.PhoneNumber = phoneNumber;
+
             return customer;
         }
        

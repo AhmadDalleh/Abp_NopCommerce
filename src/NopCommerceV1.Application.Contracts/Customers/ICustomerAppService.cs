@@ -11,6 +11,8 @@ namespace NopCommerceV1.Customers
 {
     public interface ICustomerAppService : IApplicationService
     {
-        Task<CustomerDto> CreateCustomerAsync(CreateCustomerDto input); 
+        Task<CustomerDto> CreateCustomerAsync(CreateCustomerDto input);
+
+        Task<CustomerDto> UpdateCustomerAsync(UpdateCustomerDto input, Guid id);
     }
 }

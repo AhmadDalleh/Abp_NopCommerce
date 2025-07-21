@@ -32,6 +32,10 @@ namespace NopCommerceV1.Customers
             _mapper = mapper;
         }
 
+
+        #endregion
+
+        #region Methods
         [HttpPost("create-customer")]
         public async Task<CustomerDto> CreateCustomerAsync(CreateCustomerDto input)
         {
@@ -43,10 +47,19 @@ namespace NopCommerceV1.Customers
             return _mapper.Map<CustomerDto>(customer);
 
         }
-     
-        #endregion
 
-        #region Methods
+        [HttpPut("update-customer/{id}")]
+        public async Task<CustomerDto> UpdateCustomerAsync(UpdateCustomerDto input,Guid id)
+        {
+            var customer = await _customerManager.UpdateAsync(
+                id,input.Username, input.Email, input.FirstName, input.LastName, input.PhoneNumber
+                );
+            await _customerRepository.UpdateAsync(customer);
+
+            return _mapper.Map<CustomerDto>(customer);
+
+        }
+
         #endregion
 
 
