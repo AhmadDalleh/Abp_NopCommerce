@@ -38,23 +38,27 @@ namespace NopCommerceV1.Addresses
             return _mapper.Map<AddressDto>(address);
 
         }
+
         [HttpDelete("delete-address/{id}")]
         public async Task DeleteAsync(Guid id)
         {
             await _repository.DeleteAsync(id);
         }
+
         [HttpGet("get-all-addresses")]
         public async Task<List<AddressDto>> GetAllAsync()
         {
             var address = await _repository.GetListAsync();
             return _mapper.Map<List<Address>, List<AddressDto>>(address);
         }
+
         [HttpGet("get-address/{id}")]
         public async Task<AddressDto> GetAsync(Guid id)
         {
             var address = await _repository.GetAsync(id);
             return _mapper.Map<Address,AddressDto>(address);
         }
+
         [HttpPut("update-address/{id}")]
         public async Task<AddressDto> UpdateAsync(Guid id, UpdateAddressDto addressDto)
         {
