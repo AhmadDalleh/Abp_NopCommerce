@@ -60,10 +60,12 @@ public class NopCommerceV1DomainModule : AbpModule
         {
             options.IsEnabled = MultiTenancyConsts.IsEnabled;
         });
-
-#if DEBUG
-        context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
         
+#if DEBUG
+
+        context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
+
+
 #endif
     }
 }

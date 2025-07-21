@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
-using NopCommerceV1.Addresses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,53 +13,42 @@ using Volo.Abp.Domain.Repositories;
 
 namespace NopCommerceV1.Customers
 {
+    
     [RemoteService]
-    [Route("api/app/address")]
+    [Route("api/app/customer")]
     public class CustomerAppService : ApplicationService, ICustomerAppService
     {
-        private readonly IRepository<Customer,Guid> _customerRepository;
+        #region Properties
+        private readonly IRepository<Customer, Guid> _customerRepository;
+        private readonly CustomerManager _customerManager;
         private readonly IMapper _mapper;
-        public CustomerAppService(IRepository<Customer, Guid> customerRepository, IMapper mapper)
+        #endregion
+
+        #region Ctor
+        public CustomerAppService(IRepository<Customer, Guid> customerRepository, CustomerManager customerManager, IMapper mapper)
         {
             _customerRepository = customerRepository;
+            _customerManager = customerManager;
             _mapper = mapper;
         }
 
         [HttpPost("create-customer")]
-        public async Task<CustomerDto> CreateAsync(CreateCustomerDto createCustomerDto)
+        public async Task<CustomerDto> CreateCustomerAsync(CreateCustomerDto input)
         {
-            var customer = _mapper.Map<CreateCustomerDto, Customer>(createCustomerDto);
+            var customer = await _customerManager.CreateAsync(
+                input.Username, input.Email, input.FirstName, input.LastName, input.PhoneNumber
+                );
             await _customerRepository.InsertAsync(customer);
+
             return _mapper.Map<CustomerDto>(customer);
-        }
 
-        [HttpDelete("delete-customer/{id}")]
-        public async Task DeleteAsync(Guid id)
-        {
-            await _customerRepository.DeleteAsync(id);
         }
+     
+        #endregion
 
-        [HttpGet("get-customer-by-id/{id}")]
-        public async Task<CustomerDto> GetAsync(Guid id)
-        {
-            var customer = await _customerRepository.GetAsync(id);
-            return _mapper.Map<Customer,CustomerDto>(customer);
-        }
+        #region Methods
+        #endregion
 
-        [HttpGet("get-all-customers")]
-        public async Task<List<CustomerDto>> GetListAsync()
-        {
-            var customers = await _customerRepository.GetListAsync();
-            return _mapper.Map<List<Customer>,List<CustomerDto>>(customers);
-        }
 
-        [HttpPut("update-customer/{id}")]
-        public async Task<CustomerDto> UpdateAsync(UpdateCustomerDto updateCustomerDto,Guid id)
-        {
-            var customer = await _customerRepository.GetAsync(id);
-            _mapper.Map(updateCustomerDto, customer);
-            await _customerRepository.UpdateAsync(customer);
-            return _mapper.Map<CustomerDto>(customer);
-        }
     }
 }

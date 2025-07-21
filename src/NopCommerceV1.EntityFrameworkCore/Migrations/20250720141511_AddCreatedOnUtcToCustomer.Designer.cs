@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NopCommerceV1.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace NopCommerceV1.Migrations
 {
     [DbContext(typeof(NopCommerceV1DbContext))]
-    partial class NopCommerceV1DbContextModelSnapshot : ModelSnapshot
+    [Migration("20250720141511_AddCreatedOnUtcToCustomer")]
+    partial class AddCreatedOnUtcToCustomer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,6 +195,7 @@ namespace NopCommerceV1.Migrations
                         .HasColumnName("ExtraProperties");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -210,8 +214,8 @@ namespace NopCommerceV1.Migrations
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("LastName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(50)
