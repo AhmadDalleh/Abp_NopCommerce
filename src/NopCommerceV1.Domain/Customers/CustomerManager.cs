@@ -31,16 +31,25 @@ namespace NopCommerceV1.Customers
         #endregion
 
         #region Methods 
+
+
+        public async Task ValidateCustomerAsync(Guid? customerId, string email, string username)
+        {
+            var existingByEmail = await _customerRepository.FirstOrDefaultAsync(c => c.Email == email && c.Id != customerId);
+            if (existingByEmail != null)
+                throw new BusinessException("Customer.EmailAlreadyExists").WithData("Email", email);
+
+            var existingByUsername = await _customerRepository.FirstOrDefaultAsync(c => c.Username == username && c.Id != customerId);
+            if (existingByUsername != null)
+                throw new BusinessException("Customer.UsernameAlreadyExists").WithData("Username", username);
+
+            
+        }
+
+
         public async Task<Customer> CreateAsync(string username, string email, string firstName, string lastName , string phoneNumber)
         {
-            var existingCustomer = await _customerRepository.FirstOrDefaultAsync(c => c.Email == email || c.Username == username || c.PhoneNumber == phoneNumber);
-            if (existingCustomer is not null)
-            {
-                throw new BusinessException(
-            NopCommerceV1DomainErrorCodes.CustomerEmailAlreadyExists,
-                "A customer with this email already exists.");
-            }
-
+            await ValidateCustomerAsync(null,email,username);
 
             var customer = new Customer(Guid.NewGuid(), username, email, phoneNumber, true, false)
             {
@@ -56,24 +65,12 @@ namespace NopCommerceV1.Customers
             var customer = await _customerRepository.FindAsync(c=>c.Id==id);
             if (customer is null)
             {
+                
                 throw new BusinessException(
                     NopCommerceV1DomainErrorCodes.CustomerIsNotExist, "there is no account with this id."
                     );
             }
-            var existEmail = await _customerRepository.FirstOrDefaultAsync(c =>
-                (c.Email == email && email != customer.Email) ||
-                (c.Username == username && username != customer.Username) ||
-                (c.PhoneNumber == phoneNumber && phoneNumber == customer.PhoneNumber)
-                );
-
-            if (existEmail is not null) 
-            {
-               
-               throw new BusinessException(
-               NopCommerceV1DomainErrorCodes.CustomerEmailAlreadyExists,
-               "the customer is already exists.");
-                
-            }
+            await ValidateCustomerAsync(id, email, username);
             customer.Username = username;
             customer.Email = email;
             customer.FirstName = firstName; 

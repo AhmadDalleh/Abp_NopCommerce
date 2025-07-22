@@ -16,25 +16,27 @@ namespace NopCommerceV1.Addresses
     [Route("api/app/address")]
     public class AddressAppService : ApplicationService, IAddressAppService
     {
-        private readonly IRepository<Address,Guid> _repository;
-
+        private readonly IRepository<Address,Guid> _addressRepository;
+        private readonly AddressManager _addressManager;
         private readonly IMapper _mapper;
 
         protected AddressAppService()
         {
         }
 
-        public AddressAppService(IRepository<Address, Guid> repository, IMapper mapper)
+        public AddressAppService(IRepository<Address, Guid> addressRepository, IMapper mapper, AddressManager addressManager)
         {
-            _repository = repository;
+            _addressRepository = addressRepository;
             _mapper = mapper;
+            _addressManager = addressManager;
         }
 
         [HttpPost("create-address")]
-        public async Task<AddressDto> CreateAsync(CreateAddressDto addressDto)
+        public async Task<AddressDto> CreateAsync(CreateAddressDto input)
         {
-            var address = _mapper.Map<CreateAddressDto, Address>(addressDto);
-            await _repository.InsertAsync(address);
+            var address = await _addressManager.CreateAsync(input.FirstName, input.LastName,
+                input.Email, input.ZipPostalCode, input.PhoneNumber, input.Address1, input.City);
+            await _addressRepository.InsertAsync(address);
             return _mapper.Map<AddressDto>(address);
 
         }
@@ -42,29 +44,29 @@ namespace NopCommerceV1.Addresses
         [HttpDelete("delete-address/{id}")]
         public async Task DeleteAsync(Guid id)
         {
-            await _repository.DeleteAsync(id);
+            await _addressRepository.DeleteAsync(id);
         }
 
         [HttpGet("get-all-addresses")]
         public async Task<List<AddressDto>> GetAllAsync()
         {
-            var address = await _repository.GetListAsync();
+            var address = await _addressRepository.GetListAsync();
             return _mapper.Map<List<Address>, List<AddressDto>>(address);
         }
 
         [HttpGet("get-address/{id}")]
         public async Task<AddressDto> GetAsync(Guid id)
         {
-            var address = await _repository.GetAsync(id);
+            var address = await _addressRepository.GetAsync(id);
             return _mapper.Map<Address,AddressDto>(address);
         }
 
         [HttpPut("update-address/{id}")]
-        public async Task<AddressDto> UpdateAsync(Guid id, UpdateAddressDto addressDto)
+        public async Task<AddressDto> UpdateAsync(Guid id, UpdateAddressDto input)
         {
-            var address = await _repository.GetAsync(id); 
-            _mapper.Map(addressDto,address );
-            await _repository.UpdateAsync(address);
+            var address = await _addressManager.UpdateAsync(id, input.FirstName, input.LastName, input.Email, input.ZipPostalCode,
+                input.PhoneNumber, input.Address1, input.City);
+            await _addressRepository.UpdateAsync(address);
             return _mapper.Map<AddressDto>(address);
         }
     }

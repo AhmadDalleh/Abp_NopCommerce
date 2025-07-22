@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Linq;
+
 
 namespace NopCommerceV1.Customers
 {
@@ -36,6 +36,30 @@ namespace NopCommerceV1.Customers
         #endregion
 
         #region Methods
+        // get all
+        [HttpGet("get-all-customers")]
+        public async Task<List<CustomerDto>> GetCustomersAsync()
+        {
+            var customer = await _customerRepository.GetListAsync();
+            return _mapper.Map<List<Customer>, List<CustomerDto>>(customer);
+        }
+        
+        // get by id
+        [HttpGet("get-customer/{id}")]
+        public async Task<CustomerDto> GetCustomerAsync(Guid id)
+        {
+            var customer = await _customerRepository.GetAsync(id);
+            return _mapper.Map<CustomerDto>(customer);
+        }
+
+        //delete by id
+        [HttpDelete("delete-customer/{id}")]
+        public async Task DeleteAsync(Guid id) 
+        {
+            await _customerRepository.DeleteAsync(id);
+        }
+
+        // create
         [HttpPost("create-customer")]
         public async Task<CustomerDto> CreateCustomerAsync(CreateCustomerDto input)
         {
@@ -48,6 +72,7 @@ namespace NopCommerceV1.Customers
 
         }
 
+        //update 
         [HttpPut("update-customer/{id}")]
         public async Task<CustomerDto> UpdateCustomerAsync(UpdateCustomerDto input,Guid id)
         {
