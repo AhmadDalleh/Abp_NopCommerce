@@ -13,11 +13,13 @@ public class NopCommerceV1ApplicationAutoMapperProfile : Profile
         CreateMap<CreateAddressDto, Address>();
         CreateMap<UpdateAddressDto, Address>();
 
-        CreateMap<Customer,CustomerDto >();
+        CreateMap<Customer, CustomerDto>();
         CreateMap<CreateCustomerDto, Customer>();
         CreateMap<UpdateCustomerDto, CustomerDto>();
-        /* You can configure your AutoMapper mapping configuration here.
-         * Alternatively, you can split your mapping configurations
-         * into multiple profile classes for a better organization. */
+
+
+        CreateMap<CustomerPassword, CustomerPasswordDto>();
+        CreateMap<CreateUpdateCustomerPasswordDto, CustomerPassword>();
+       
     }
 }

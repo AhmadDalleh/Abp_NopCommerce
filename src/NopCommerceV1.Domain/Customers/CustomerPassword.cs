@@ -32,6 +32,8 @@ namespace NopCommerceV1.Customers
 
         public PasswordFormat PasswordFormatId { get; set; } // Matches nopCommerce
 
+        public string? PasswordSalt { get; set; }
+
         public DateTime CreatedOnUtc { get; set; }
 
         public virtual Customer Customer { get; set; }

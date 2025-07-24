@@ -128,7 +128,10 @@ public class NopCommerceV1DbContext :
 
             b.Property(x => x.Password)
             .IsRequired()
-            .HasMaxLength(512);
+            .HasMaxLength(1000);
+
+            b.Property(x => x.PasswordSalt).HasMaxLength(1000);
+
 
             b.Property(x => x.PasswordFormatId)
             .IsRequired();

@@ -48,7 +48,7 @@ namespace NopCommerceV1.Customers
         public virtual Address? BillingAddress { get; set; }
         public virtual Address? ShippingAddress { get; set; }
         public virtual ICollection<CustomerRole>? CustomerRoles { get; set; } = new List<CustomerRole>();
-        public virtual ICollection<CustomerPassword>? CustomerPasswords { get; set; } = new List<CustomerPassword>();
+        public virtual ICollection<CustomerPassword> CustomerPasswords { get; set; } = new List<CustomerPassword>();
         public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
 
 
